@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from utils import displayEpipolarF, calc_epi_error, toHomogenous, refineF, _singularize
+from utils import displayEpipolarF, toHomogenous, refineF, _singularize # calc_epi_error
 
 def eightpoint(pts1, pts2, M):
     """
@@ -64,7 +64,9 @@ def sevenpoint(pts1, pts2, M):
     f1, f2 = Vt[-1].reshape(3, 3), Vt[-2].reshape(3, 3)
 
     # Use the singularity constraint to solve for the cubic polynomial equation
-    det_constraint = lambda a: np.linalg.det(a*f1 + (1-a)*f2)
+    def det_constraint(a):
+        # Compute the determinant of the matrix
+        return np.linalg.det(a*f1 + (1-a)*f2)
 
     coeff0 = det_constraint(0)
     coeff1 = 2*(det_constraint(1)-det_constraint(-1))/3 - (det_constraint(2)-det_constraint(-2))/12 
